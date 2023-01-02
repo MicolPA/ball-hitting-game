@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,10 +12,18 @@ public class PlayerController : MonoBehaviour
     public bool hasPowerUp;
     private float powerUpStrength = 15.0f;
     public GameObject powerUpIndicator;
+
+    //Sound Effects
     private AudioSource playerAudio;
     public AudioClip powerUpSound;
     public AudioClip crashingSound;
+
+    //Visual Effects
     public ParticleSystem powerUpEffect;
+
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,29 +37,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        PlayerMovementController();
+
+        powerUpIndicator.gameObject.transform.position = transform.position - new Vector3(0, 0.5f, 0);
+        powerUpIndicator.gameObject.SetActive(hasPowerUp);
+        
+    }
+
+    void PlayerMovementController(){
         float verticalInput = Input.GetAxis("Vertical");
         playerRb.AddForce(focalPoint.transform.forward * verticalInput * speed);
 
         float horizontalInput = Input.GetAxis("Horizontal");
         playerRb.AddForce(focalPoint.transform.right * horizontalInput * speed);
-
-        powerUpIndicator.gameObject.transform.position = transform.position - new Vector3(0, 0.5f, 0);
-        powerUpIndicator.gameObject.SetActive(hasPowerUp);
-
-        if (Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene("Main");
-            // Application.LoadLevel(0); 
-        }
-
-        if(Input.GetKeyDown(KeyCode.P)){
-            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
-        }
     }
 
     private void OnTriggerEnter(Collider other) {
         
-        if (other.CompareTag("PowerUp"))
+        if (other.CompareTag("PowerUp") && !hasPowerUp)
         {
             hasPowerUp = true;
             powerUpEffect.Play();

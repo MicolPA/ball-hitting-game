@@ -8,14 +8,15 @@ public class SpawnManager : MonoBehaviour
     public GameObject enemyPrefab;
     private float spawnRange = 9;
     public int enemyCount;
-    private int enemyToSpawn = 0;
+    public int enemyToSpawn = 0;
 
     public GameObject powerUpPrefab;
+    private GameManager gameManagerScript;
     
     // Start is called before the first frame update
     void Start()
     {
-
+        gameManagerScript = GameObject.Find("Game Manager").GetComponent<GameManager>();
         
     }
 
@@ -23,7 +24,7 @@ public class SpawnManager : MonoBehaviour
     void Update()
     {
         enemyCount = FindObjectsOfType<EnemyController>().Length;
-        if(enemyCount  == 0){
+        if(enemyCount  == 0 && !gameManagerScript.isGameOver){
             enemyToSpawn++;
             SpawnEnemy(enemyToSpawn);
             Instantiate(powerUpPrefab, GenerateSpawnPosition(), powerUpPrefab.transform.rotation); 
